@@ -26,5 +26,16 @@ Route.group(() => {
 
 Route.group(() => {
   Route.post('register', 'PatientController.register')
+  Route.get('getpatient/:id', 'PatientController.show')
+  Route.delete('deletepatient/:id', 'PatientController.destroy')
+  Route.put('putpatient/:id', 'PatientController.update')
 
 }).prefix('patients')
+
+Route.group(() => {
+  Route.post('register', 'AnamneseController.register')
+  Route.get('getanamnese/:id', 'AnamneseController.buscar')
+  Route.delete('deleteanamnese/:id', 'AnamneseController.destroy')
+  Route.put('putanamnese/:id', 'AnamnseController.update')
+
+}).prefix('anamneses')

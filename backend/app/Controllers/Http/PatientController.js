@@ -1,6 +1,8 @@
 'use strict'
 
 const Patient = use('App/Models/Patient')
+const Database = use('Database')
+
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -31,6 +33,9 @@ class PatientController {
 
     return response.send({ message: "Paciente cadastrado!" });
   }
+
+  
+    
 
   async index ({ request, response, view }) {
   }
@@ -68,7 +73,19 @@ class PatientController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-  }
+      const patient = await Patient.find(params.id);
+      const res = {
+        id: patient.id,
+        nome: patient.nome,
+        cpf: patient.cpf,
+        cidade: patient.cidade,
+        estado: patient.estado,
+        endereco: patient.endereco
+
+      };
+
+      return response.json(res);
+    }
 
   /**
    * Render a form to update an existing patient.
@@ -91,6 +108,15 @@ class PatientController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+
+      const patient = await Patient.findOrFail(params.id);
+    const data = request.only(["nome", "cpf", "cidade", "estado", "endereco"]);
+
+      patient.merge(data);
+      await patient.save();
+
+      return patient
+  
   }
 
   /**
@@ -102,7 +128,12 @@ class PatientController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
-  }
+    const patient = await Patient.findOrFail(params.id);
+      await patient.delete();
+      return "Paciente deletado!";
+
+    };
+  
 }
 
 module.exports = PatientController
